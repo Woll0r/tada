@@ -20,10 +20,10 @@ class GajimBackend(IPlugin):
 
     def makeZip(self):
         outzip = zipfile.ZipFile("output/gajim.zip", 'w')
-        outzip.writestr("BerachsEmotePack-gajim/emoticons.py", self.emoticons)
+        outzip.writestr("PonyEmotePack-gajim/emoticons.py", self.emoticons)
         for emote in self.pack.emotelist:
             try:
-                outzip.write("input/"+emote.filename, "BerachsEmotePack-gajim/"+emote.filename)
+                outzip.write("input/"+emote.filename, "PonyEmotePack-gajim/"+emote.filename)
             except OSError:
                 # The underlying emote file isn't found
                 # This throws varying errors, but are all OSError or subclasses

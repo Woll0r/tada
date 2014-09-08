@@ -25,11 +25,11 @@ class TrillianBackend(IPlugin):
 
     def makeZip(self):
         outzip = zipfile.ZipFile("output/Trillian.zip", 'w')
-        outzip.writestr("BerachsEmotePack-trillian/main.xml", self.trillianzip)
-        outzip.writestr("BerachsEmotePack-trillian/desc.txt", "emot")
+        outzip.writestr("PonyEmotePack-trillian/main.xml", self.trillianzip)
+        outzip.writestr("PonyEmotePack-trillian/desc.txt", "emot")
         for emote in self.pack.emotelist:
             try:
-                outzip.write("input/"+emote.filename, "BerachsEmotePack-trillian/"+emote.filename)
+                outzip.write("input/"+emote.filename, "PonyEmotePack-trillian/"+emote.filename)
             except OSError:
                 # The underlying emote file isn't found
                 # This throws varying errors, but are all OSError or subclasses
@@ -39,7 +39,7 @@ class TrillianBackend(IPlugin):
 
     template = \
 """{% for emote in Emotes.emotelist %}
-<bitmap name="{{ emote.filename }}" file="../../stixe/plugins/BerachsEmotePack-trillian/{{ emote.filename }}" />
+<bitmap name="{{ emote.filename }}" file="../../stixe/plugins/PonyEmotePack-trillian/{{ emote.filename }}" />
 {% endfor %}
 <prefs>
 <control name="emoticons" type="emoticons">

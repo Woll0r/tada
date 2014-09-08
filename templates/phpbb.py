@@ -25,10 +25,10 @@ class phpBBBackend(IPlugin):
 
     def makeZip(self):
         outzip = zipfile.ZipFile("output/phpBB.zip", 'w')
-        outzip.writestr("BerachsEmotePack-phpBB/berachs.pak", self.smiliepak)
+        outzip.writestr("PonyEmotePack-phpBB/Pony.pak", self.smiliepak)
         for emote in self.pack.emotelist:
             try:
-                outzip.write("input/"+emote.filename, "BerachsEmotePack-phpBB/"+emote.filename)
+                outzip.write("input/"+emote.filename, "PonyEmotePack-phpBB/"+emote.filename)
             except OSError:
                 # The underlying emote file isn't found
                 # This throws varying errors, but are all OSError or subclasses
