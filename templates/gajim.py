@@ -19,11 +19,11 @@ class GajimBackend(IPlugin):
         self.emoticons += pformat({emote.filename: emote.shortcuts for emote in self.pack.emotelist})
 
     def makeZip(self):
-        outzip = zipfile.ZipFile("output/gajim.zip", 'w')
-        outzip.writestr("PonyEmotePack-gajim/emoticons.py", self.emoticons)
+        outzip = zipfile.ZipFile("output/"+self.pack.name+"-gajim.zip", 'w')
+        outzip.writestr(self.pack.name+"-gajim/emoticons.py", self.emoticons)
         for emote in self.pack.emotelist:
             try:
-                outzip.write("input/"+emote.filename, "PonyEmotePack-gajim/"+emote.filename)
+                outzip.write(self.pack.path+"/"+emote.filename, self.pack.name+"-gajim/"+emote.filename)
             except OSError:
                 # The underlying emote file isn't found
                 # This throws varying errors, but are all OSError or subclasses

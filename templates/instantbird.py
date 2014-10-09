@@ -29,11 +29,11 @@ class InstantbirdBackend(IPlugin):
 
         for emote in self.pack.emotelist:
             try:
-                jarZip.write("input/"+emote.filename, emote.filename)
+                jarZip.write(self.pack.path+"/"+emote.filename, emote.filename)
             except OSError:
                 pass
 
-        outzip = zipfile.ZipFile("output/instantbird.xpi", "w")
+        outzip = zipfile.ZipFile("output/"+self.pack.name+"-instantbird.xpi", "w")
         jarZip.close()
         jar.seek(0)
         outzip.writestr("chrome/skin.jar", jar.read())

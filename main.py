@@ -3,6 +3,7 @@ import mimetypes
 from yapsy.PluginManager import PluginManager
 from os import path
 from PIL import Image
+from optparse import OptionParser
 
 
 # Create the emote pack container
@@ -13,6 +14,7 @@ class EmotePack(object):
     version = ""
     icon = ""
     emotelist = []
+    path = ""
 
 
 class Emote(object):
@@ -22,11 +24,28 @@ class Emote(object):
     width = 0
     height = 0
 
-inputData = open(path.join("input", "theme"), 'r')
+optp = OptionParser()
+
+optp.add_option("-i", "--input", dest="inputdir", help="Input folder containing the emote pack")
+
+opts, args = optp.parse_args()
+
+inputDir = "input"
+
+if opts.inputdir:
+    inputDir = opts.inputdir
+
+if not path.isdir(inputDir):
+    print("Input directory doesn't exist")
+    exit(1)
+
+inputData = open(path.join(inputDir, "theme"), 'r')
 inputData = inputData.read()
 
 # Instantiate and fill the pack metadata
 InputPack = EmotePack()
+
+InputPack.path = inputDir
 
 try:
     InputPack.name = re.findall(r"Name=(.*)", inputData)[-1]
@@ -39,7 +58,6 @@ try:
 except IndexError:
     print "Couldn't find a description, skipping"
     pass
-InputPack.desc += " converted by Kline Eto"
 
 try:
     InputPack.author = re.findall(r"Author=(.*)", inputData)[-1]
@@ -48,7 +66,7 @@ except IndexError:
     pass
 
 # Reopen the pack in line mode
-inputFile = open(path.join("input", "theme"), 'r')
+inputFile = open(path.join(inputDir, "theme"), 'r')
 inputFile = inputFile.readlines()
 
 # Fill the container with Emotes

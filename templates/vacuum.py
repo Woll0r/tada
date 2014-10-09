@@ -24,11 +24,11 @@ class VacuumBackend(IPlugin):
         self.icondef = vacuumTemplate.render(Emotes=self.pack)
 
     def makeZip(self):
-        outzip = zipfile.ZipFile("output/vacuum.zip", 'w')
-        outzip.writestr("PonyEmotePack-vacuum/icon.def.xml", self.icondef)
+        outzip = zipfile.ZipFile("output/"+self.pack.name+"-vacuum.zip", 'w')
+        outzip.writestr(self.pack.name+"-vacuum/icon.def.xml", self.icondef)
         for emote in self.pack.emotelist:
             try:
-                outzip.write("input/"+emote.filename, "PonyEmotePack-vacuum/"+emote.filename)
+                outzip.write(self.pack.path+"/"+emote.filename, self.pack.name+"-vacuum/"+emote.filename)
             except OSError:
                 # The underlying emote file isn't found
                 # This throws varying errors, but are all OSError or subclasses
