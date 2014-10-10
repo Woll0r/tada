@@ -99,7 +99,7 @@ for line in inputFile:
         InputPack.emotelist.append(thisEmote)
 
 pm = PluginManager(
-    directories_list=["templates"],
+    directories_list=["templates", path.join(path.dirname(path.abspath(__file__)), "templates")],
     plugin_info_ext="plug"
 )
 pm.collectPlugins()
