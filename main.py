@@ -15,7 +15,7 @@ class EmotePack(object):
     icon = ""
     emotelist = []
     path = ""
-
+    output = ""
 
 class Emote(object):
     filename = ""
@@ -27,16 +27,25 @@ class Emote(object):
 optp = OptionParser()
 
 optp.add_option("-i", "--input", dest="inputdir", help="Input folder containing the emote pack")
+optp.add_option("-o", "--output", dest="outputdir", help="Output folder for converted packs")
 
 opts, args = optp.parse_args()
 
 inputDir = "input"
+outputDir = "output"
 
 if opts.inputdir:
     inputDir = opts.inputdir
 
+if opts.outputdir:
+    outputDir = opts.outputdir
+
 if not path.isdir(inputDir):
     print("Input directory doesn't exist")
+    exit(1)
+
+if not path.isdir(outputDir):
+    print("Output directory doesn't exist")
     exit(1)
 
 inputData = open(path.join(inputDir, "theme"), 'r')
@@ -46,6 +55,7 @@ inputData = inputData.read()
 InputPack = EmotePack()
 
 InputPack.path = inputDir
+InputPack.output = outputDir
 
 try:
     InputPack.name = re.findall(r"Name=(.*)", inputData)[-1]

@@ -24,7 +24,7 @@ class AdiumBackend(IPlugin):
         self.emotelist = adiumTemplate.render(Emotes=self.pack)
 
     def makeZip(self):
-        outzip = zipfile.ZipFile("output/"+self.pack.name+"-adium.zip", 'w')
+        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.name+"-adium.zip", 'w')
         outzip.writestr(self.pack.name+".AdiumEmoticonset/Emoticons.plist", self.emotelist)
         for emote in self.pack.emotelist:
             try:
