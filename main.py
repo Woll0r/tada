@@ -91,7 +91,7 @@ for line in inputFile:
         thisEmote.shortcuts = line[1:]
 
         try:                # Dimensions are required for phpBB
-            im = Image.open(path.join("input", thisEmote.filename))
+            im = Image.open(path.join(inputDir, thisEmote.filename))
             thisEmote.width, thisEmote.height = im.size
         except IOError:     # If the file doesn't exist, lets not package it, either
             continue
