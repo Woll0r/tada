@@ -33,7 +33,7 @@ class InstantbirdBackend(IPlugin):
             except OSError:
                 pass
 
-        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.name+"-instantbird.xpi", "w")
+        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-instantbird.xpi", "w")
         jarZip.close()
         jar.seek(0)
         outzip.writestr("chrome/skin.jar", jar.read())

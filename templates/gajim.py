@@ -19,7 +19,7 @@ class GajimBackend(IPlugin):
         self.emoticons += pformat({emote.filename: emote.shortcuts for emote in self.pack.emotelist})
 
     def makeZip(self):
-        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.name+"-gajim.zip", 'w')
+        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-gajim.zip", 'w')
         outzip.writestr(self.pack.name+"-gajim/emoticons.py", self.emoticons)
         for emote in self.pack.emotelist:
             try:

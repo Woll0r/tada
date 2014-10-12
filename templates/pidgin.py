@@ -11,8 +11,8 @@ class PidginBackend(IPlugin):
         self.makeZip()
 
     def makeZip(self):
-        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.name+"-pidgin.zip", 'w')
-        outzip.write(self.pack.path+"/theme", self.pack.name+"-pidgin/theme")
+        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-pidgin.zip", 'w')
+        outzip.write(self.pack.path+"/theme", self.pack.filename+"-pidgin/theme")
         for emote in self.pack.emotelist:
             try:
                 outzip.write(self.pack.path+"/"+emote.filename, self.pack.name+"-pidgin/"+emote.filename)

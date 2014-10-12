@@ -24,7 +24,7 @@ class VacuumBackend(IPlugin):
         self.icondef = vacuumTemplate.render(Emotes=self.pack)
 
     def makeZip(self):
-        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.name+"-psi.zip", 'w')
+        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-psi.zip", 'w')
         outzip.writestr(self.pack.name+"-psi/icondef.xml", self.icondef)
         for emote in self.pack.emotelist:
             try:

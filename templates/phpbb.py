@@ -24,7 +24,7 @@ class phpBBBackend(IPlugin):
         self.smiliepak = phpBBTemplate.render(Emotes=self.pack)
 
     def makeZip(self):
-        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.name+"-phpBB.zip", 'w')
+        outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-phpBB.zip", 'w')
         outzip.writestr(self.pack.name+"-phpBB/Pony.pak", self.smiliepak)
         for emote in self.pack.emotelist:
             try:

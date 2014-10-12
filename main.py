@@ -16,6 +16,7 @@ class EmotePack(object):
     emotelist = []
     path = ""
     output = ""
+    filename = ""
 
 class Emote(object):
     filename = ""
@@ -28,6 +29,7 @@ optp = OptionParser()
 
 optp.add_option("-i", "--input", dest="inputdir", help="Input folder containing the emote pack")
 optp.add_option("-o", "--output", dest="outputdir", help="Output folder for converted packs")
+optp.add_option("-n", "--name", dest="name", help="Filename prefix")
 
 opts, args = optp.parse_args()
 
@@ -74,6 +76,11 @@ try:
 except IndexError:
     print "Couldn't find an author, skipping"
     pass
+
+if opts.name:
+    InputPack.filename = opts.name
+else:
+    InputPack.filename = InputPack.name
 
 # Reopen the pack in line mode
 inputFile = open(path.join(inputDir, "theme"), 'r')
