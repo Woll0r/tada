@@ -82,21 +82,12 @@ if opts.name:
 else:
     InputPack.filename = InputPack.name
 
-# Reopen the pack in line mode
+# Reopen the pack in line mode and skip the header lines
 inputFile = open(path.join(inputDir, "theme"), 'r')
-inputFile = inputFile.readlines()
+inputFile = inputFile.readlines()[6:]
 
 # Fill the container with Emotes
-inEmoteSection = False
-
 for line in inputFile:
-    if line == '[default]':
-        inEmoteSection = True
-        continue
-
-    if not inEmoteSection:
-        continue
-
     if line.startswith('!'):
         line = line.replace('!', '')    # Strip off the leading !
     line = line.split()             # Split into tokens
