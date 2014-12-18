@@ -87,23 +87,32 @@ inputFile = open(path.join(inputDir, "theme"), 'r')
 inputFile = inputFile.readlines()
 
 # Fill the container with Emotes
+inEmoteSection = False
+
 for line in inputFile:
+    if line == '[default]':
+        inEmoteSection = True
+        continue
+
+    if not inEmoteSection:
+        continue
+
     if line.startswith('!'):
         line = line.replace('!', '')    # Strip off the leading !
-        line = line.split()             # Split into tokens
+    line = line.split()             # Split into tokens
 
-        thisEmote = Emote()
-        thisEmote.filename = line[0]    # Identify the file and its type, as required for some formats.
-        thisEmote.filetype = mimetypes.guess_type(line[0])[0]
-        thisEmote.shortcuts = line[1:]
+    thisEmote = Emote()
+    thisEmote.filename = line[0]    # Identify the file and its type, as required for some formats.
+    thisEmote.filetype = mimetypes.guess_type(line[0])[0]
+    thisEmote.shortcuts = line[1:]
 
-        try:                # Dimensions are required for phpBB
-            im = Image.open(path.join(inputDir, thisEmote.filename))
-            thisEmote.width, thisEmote.height = im.size
-        except IOError:     # If the file doesn't exist, lets not package it, either
-            continue
+    try:                # Dimensions are required for phpBB
+        im = Image.open(path.join(inputDir, thisEmote.filename))
+        thisEmote.width, thisEmote.height = im.size
+    except IOError:     # If the file doesn't exist, lets not package it, either
+        continue
 
-        InputPack.emotelist.append(thisEmote)
+    InputPack.emotelist.append(thisEmote)
 
 pm = PluginManager(
     directories_list=["templates", path.join(path.dirname(path.abspath(__file__)), "templates")],
