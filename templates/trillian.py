@@ -26,7 +26,7 @@ class TrillianBackend(IPlugin):
     def makeZip(self):
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-trillian.zip", 'w')
         outzip.writestr(self.pack.name+"-trillian/main.xml", self.trillianzip)
-        outzip.writestr(self.pack.name+"-trillian/desc.txt", "emot")
+        outzip.writestr(self.pack.name+"-trillian/desc.txt", self.pack.name + "\nemot")
         for emote in self.pack.emotelist:
             try:
                 outzip.write(self.pack.path+"/"+emote.filename, self.pack.name+"-trillian/"+emote.filename)
