@@ -1,0 +1,3 @@
+[Core]
+Name = QDB Script Backend
+Module = qdb.py
