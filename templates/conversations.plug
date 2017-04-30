@@ -1,0 +1,3 @@
+[Core]
+Name = Conversations Output Backend
+Module = conversations.py
