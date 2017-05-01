@@ -12,15 +12,24 @@ class ConversationsBackend(IPlugin):
 
     def makeZip(self):
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-conversations.zip", 'w')
-        aliases = {}
+        emotes = {}
         for emote in self.pack.emotelist:
             try:
-                outzip.write(self.pack.path+"/"+emote.filename, emote.filename)
-                for shortcut in emote.shortcuts:
-                    aliases[shortcut] = emote.filename
+                outzip.write(self.pack.path+"/"+emote.filename, "emotes/" + emote.filename)
+                emotes[emote.filename] = {
+                    "aliases": emote.shortcuts,
+                    "width": emote.width,
+                    "height": emote.height
+                }
             except OSError:
                 # The underlying emote file isn't found
                 # This throws varying errors, but are all OSError or subclasses
                 pass
-        outzip.writestr("emoticons.json", json.dumps({"emotes": aliases}))
+        outzip.writestr("emotes/emoticons.json", json.dumps({
+            "version": 2,
+            "name": self.pack.name,
+            "description": self.pack.desc,
+            "author": self.pack.author,
+            "emotes": emotes
+        }))
         outzip.close()
