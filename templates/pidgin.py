@@ -1,16 +1,22 @@
-from yapsy.IPlugin import IPlugin
+"""Pidgin plugin for Tada"""
+
 import zipfile
+
+from yapsy.IPlugin import IPlugin
 
 
 class PidginBackend(IPlugin):
+    """Pidgin plugin for Tada"""
     pack = None
 
     def build(self, pack):
+        """Build the emote pack"""
         self.pack = pack
-        print "[Pidgin] Building zip..."
-        self.makeZip()
+        print("[Pidgin] Building zip...")
+        self.makezip()
 
-    def makeZip(self):
+    def makezip(self):
+        """Create the emote zip file"""
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-pidgin.zip", 'w')
         outzip.write(self.pack.path+"/theme", self.pack.name+"-pidgin/theme")
         for emote in self.pack.emotelist:

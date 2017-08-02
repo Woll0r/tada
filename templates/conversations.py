@@ -1,16 +1,22 @@
-from yapsy.IPlugin import IPlugin
-import zipfile
+"""Conversations plugin for Tada"""
+
 import json
+import zipfile
+
+from yapsy.IPlugin import IPlugin
 
 class ConversationsBackend(IPlugin):
+    """Conversations plugin for Tada"""
     pack = None
 
     def build(self, pack):
+        """Build the emote pack"""
         self.pack = pack
-        print "[Conversations] Building zip..."
-        self.makeZip()
+        print("[Conversations] Building zip...")
+        self.makezip()
 
-    def makeZip(self):
+    def makezip(self):
+        """Create the emote zip file"""
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-conversations.zip", 'w')
         emotes = {}
         for emote in self.pack.emotelist:

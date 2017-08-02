@@ -1,21 +1,31 @@
-from yapsy.IPlugin import IPlugin
+"""Instantbird plugin for Tada"""
+
 import json
-import cStringIO
 import zipfile
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+from yapsy.IPlugin import IPlugin
 
 
 class InstantbirdBackend(IPlugin):
+    """Instantbird plugin for Tada"""
     pack = None
-    theme = { "smileys": [] }
+    theme = {"smileys": []}
 
     def build(self, pack):
+        """Build the emote pack"""
         self.pack = pack
-        print "[InstantBird] Building Theme JSON..."
-        self.buildTheme()
-        print "[InstantBird] Packaging..."
+        print("[InstantBird] Building Theme JSON...")
+        self.buildtheme()
+        print("[InstantBird] Packaging...")
         self.package()
 
-    def buildTheme(self):
+    def buildtheme(self):
+        """Create the emote list to fill the config"""
         for emote in self.pack.emotelist:
             self.theme['smileys'].append({
                 "filename": emote.filename,
@@ -23,18 +33,19 @@ class InstantbirdBackend(IPlugin):
             })
 
     def package(self):
-        jar = cStringIO.StringIO()
-        jarZip = zipfile.ZipFile(jar, 'a')
-        jarZip.writestr("theme.js", json.dumps(self.theme))
+        """Create the emote package"""
+        jar = StringIO.StringIO()
+        jarzip = zipfile.ZipFile(jar, 'a')
+        jarzip.writestr("theme.js", json.dumps(self.theme))
 
         for emote in self.pack.emotelist:
             try:
-                jarZip.write(self.pack.path+"/"+emote.filename, emote.filename)
+                jarzip.write(self.pack.path+"/"+emote.filename, emote.filename)
             except OSError:
                 pass
 
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-instantbird.xpi", "w")
-        jarZip.close()
+        jarzip.close()
         jar.seek(0)
         outzip.writestr("chrome/skin.jar", jar.read())
 
@@ -50,7 +61,7 @@ class InstantbirdBackend(IPlugin):
     rdf = \
 """<?xml version="1.0"?>
 
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
@@ -59,7 +70,7 @@ class InstantbirdBackend(IPlugin):
     <em:version>%s</em:version>
     <em:description>%s</em:description>
     <em:creator>%s</em:creator>
-    
+
     <!-- Instantbird -->
     <em:targetApplication>
       <Description>
@@ -68,5 +79,5 @@ class InstantbirdBackend(IPlugin):
         <em:maxVersion>5.5a1pre</em:maxVersion>
       </Description>
     </em:targetApplication>
-  </Description>    
+  </Description>
 </RDF>"""

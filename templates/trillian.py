@@ -1,29 +1,36 @@
-from yapsy.IPlugin import IPlugin
-import jinja2
+"""Trillian plugin for Tada"""
+
 import zipfile
+
+import jinja2
+from yapsy.IPlugin import IPlugin
 
 
 class TrillianBackend(IPlugin):
+    """Trillian plugin for Tada"""
     pack = None
     trillianzip = ""
 
     def build(self, pack):
+        """Build the emote pack"""
         self.pack = pack
-        print "[Trillian] Building xml file..."
+        print("[Trillian] Building xml file...")
         self.buildicondef()
-        print "[Trillian] Building zip..."
-        self.makeZip()
+        print("[Trillian] Building zip...")
+        self.makezip()
 
     def buildicondef(self):
+        """Create the emote list to fill the config"""
         env = jinja2.Environment(
             trim_blocks=True,
             lstrip_blocks=True
         )
 
-        TrillianTemplate = env.from_string(self.template)
-        self.trillianzip = TrillianTemplate.render(Emotes=self.pack)
+        trilliantemplate = env.from_string(self.template)
+        self.trillianzip = trilliantemplate.render(Emotes=self.pack)
 
-    def makeZip(self):
+    def makezip(self):
+        """Create the emote zip file"""
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-trillian.zip", 'w')
         outzip.writestr(self.pack.name+"-trillian/main.xml", self.trillianzip)
         outzip.writestr(self.pack.name+"-trillian/desc.txt", self.pack.name + "\nemot")

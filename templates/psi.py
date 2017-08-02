@@ -1,29 +1,36 @@
-from yapsy.IPlugin import IPlugin
-import jinja2
+"""Psi plugin for Tada"""
+
 import zipfile
 
+import jinja2
+from yapsy.IPlugin import IPlugin
 
-class VacuumBackend(IPlugin):
+
+class PsiBackend(IPlugin):
+    """Psi plugin for Tada"""
     pack = None
     icondef = ""
-        
+
     def build(self, pack):
+        """Build the emote pack"""
         self.pack = pack
-        print "[Psi] Building icondef..."
+        print("[Psi] Building icondef...")
         self.buildicondef()
-        print "[Psi] Building zip..."
-        self.makeZip()
+        print("[Psi] Building zip...")
+        self.makezip()
 
     def buildicondef(self):
+        """Create the emote list to fill the config"""
         env = jinja2.Environment(
             trim_blocks=True,
             lstrip_blocks=True
         )
 
-        vacuumTemplate = env.from_string(self.template)
-        self.icondef = vacuumTemplate.render(Emotes=self.pack)
+        psitemplate = env.from_string(self.template)
+        self.icondef = psitemplate.render(Emotes=self.pack)
 
-    def makeZip(self):
+    def makezip(self):
+        """Create the emote zip file"""
         outzip = zipfile.ZipFile(self.pack.output+"/"+self.pack.filename+"-psi.jisp", 'w')
         outzip.writestr(self.pack.filename+"-psi/icondef.xml", self.icondef)
         for emote in self.pack.emotelist:

@@ -1,13 +1,16 @@
-import re
-import mimetypes
-from yapsy.PluginManager import PluginManager
-from os import path
-from PIL import Image
-from optparse import OptionParser
+"""Tada converts emotes from Pidgin to several other formats"""
 
+import mimetypes
+import re
+from argparse import ArgumentParser
+from os import path
+
+from PIL import Image
+from yapsy.PluginManager import PluginManager
 
 # Create the emote pack container
 class EmotePack(object):
+    """Defines the metadata and content of an emote pack"""
     name = "Untitled Pack"
     desc = ""
     author = ""
@@ -19,18 +22,19 @@ class EmotePack(object):
     filename = ""
 
 class Emote(object):
+    """A single emote object in an emote pack"""
     filename = ""
     filetype = ""
     shortcuts = []
     width = 0
     height = 0
 
-optp = OptionParser()
+optp = ArgumentParser()
 
-optp.add_option("-i", "--input", dest="inputdir", help="Input folder containing the emote pack")
-optp.add_option("-o", "--output", dest="outputdir", help="Output folder for converted packs")
-optp.add_option("-n", "--name", dest="name", help="Filename prefix")
-optp.add_option("-v", "--verbose", dest="verbose", action="store_true", help="Verbose output")
+optp.add_argument("-i", "--input", dest="inputdir", help="Input folder containing the emote pack")
+optp.add_argument("-o", "--output", dest="outputdir", help="Output folder for converted packs")
+optp.add_argument("-n", "--name", dest="name", help="Filename prefix")
+optp.add_argument("-v", "--verbose", dest="verbose", action="store_true", help="Verbose output")
 
 opts, args = optp.parse_args()
 
@@ -67,19 +71,19 @@ InputPack.output = outputDir
 try:
     InputPack.name = re.findall(r"Name=(.*)", inputData)[-1]
 except IndexError:
-    print "Couldn't find a name, skipping"
+    print("Couldn't find a name, skipping")
     pass
 
 try:
     InputPack.desc = re.findall(r"Description=(.*)", inputData)[-1]
 except IndexError:
-    print "Couldn't find a description, skipping"
+    print("Couldn't find a description, skipping")
     pass
 
 try:
     InputPack.author = re.findall(r"Author=(.*)", inputData)[-1]
 except IndexError:
-    print "Couldn't find an author, skipping"
+    print("Couldn't find an author, skipping")
     pass
 
 if opts.name:
@@ -94,7 +98,7 @@ inputFile = inputFile.readlines()[6:]
 # Fill the container with Emotes
 for line in inputFile:
     if verbose:
-        print line
+        print(line)
 
     if line.startswith('!'):
         line = line.replace('!', '')    # Strip off the leading !
