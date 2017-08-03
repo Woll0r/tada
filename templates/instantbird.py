@@ -3,10 +3,11 @@
 import json
 import zipfile
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+#try:
+#    from StringIO import StringIO
+#except ImportError:
+#    from io import StringIO
+from io import BytesIO
 
 from yapsy.IPlugin import IPlugin
 
@@ -34,7 +35,7 @@ class InstantbirdBackend(IPlugin):
 
     def package(self):
         """Create the emote package"""
-        jar = StringIO.StringIO()
+        jar = BytesIO()
         jarzip = zipfile.ZipFile(jar, 'a')
         jarzip.writestr("theme.js", json.dumps(self.theme))
 
@@ -53,7 +54,12 @@ class InstantbirdBackend(IPlugin):
             self.pack.version = "1.0"
 
         outzip.writestr("chrome.manifest", self.manifest)
-        outzip.writestr("install.rdf", self.rdf % (self.pack.name, self.pack.version, self.pack.desc, self.pack.author))
+        outzip.writestr("install.rdf",
+                        self.rdf % (self.pack.name,
+                                    self.pack.version,
+                                    self.pack.desc,
+                                    self.pack.author)
+                       )
         outzip.close()
 
 
