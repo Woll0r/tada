@@ -29,99 +29,119 @@ class Emote(object):
     width = 0
     height = 0
 
-optp = ArgumentParser()
+def main():
+    """Main program execution"""
+    if not path.isdir(inputdir):
+        print("Input directory doesn't exist")
+        exit(1)
 
-optp.add_argument("-i", "--input", dest="inputdir", help="Input folder containing the emote pack")
-optp.add_argument("-o", "--output", dest="outputdir", help="Output folder for converted packs")
-optp.add_argument("-n", "--name", dest="name", help="Filename prefix")
-optp.add_argument("-v", "--verbose", dest="verbose", action="store_true", help="Verbose output")
+    if not path.isdir(outputdir):
+        print("Output directory doesn't exist")
+        exit(1)
 
-opts, args = optp.parse_args()
+    inputdata = open(path.join(inputdir, "theme"), 'r')
+    inputdata = inputdata.read()
 
-inputDir = "input"
-outputDir = "output"
-verbose = False
+    # Instantiate and fill the pack metadata
+    inputpack = EmotePack()
 
-if opts.inputdir:
-    inputDir = opts.inputdir
+    inputpack.path = inputdir
+    inputpack.output = outputdir
 
-if opts.outputdir:
-    outputDir = opts.outputdir
+    try:
+        inputpack.name = re.findall(r"Name=(.*)", inputdata)[-1]
+    except IndexError:
+        print("Couldn't find a name, skipping")
+        pass
 
-if opts.verbose:
-    verbose = True
+    try:
+        inputpack.desc = re.findall(r"Description=(.*)", inputdata)[-1]
+    except IndexError:
+        print("Couldn't find a description, skipping")
+        pass
 
-if not path.isdir(inputDir):
-    print("Input directory doesn't exist")
-    exit(1)
+    try:
+        inputpack.author = re.findall(r"Author=(.*)", inputdata)[-1]
+    except IndexError:
+        print("Couldn't find an author, skipping")
+        pass
 
-if not path.isdir(outputDir):
-    print("Output directory doesn't exist")
-    exit(1)
+    if opts.name:
+        inputpack.filename = opts.name
+    else:
+        inputpack.filename = inputpack.name
 
-inputData = open(path.join(inputDir, "theme"), 'r')
-inputData = inputData.read()
+    # Reopen the pack in line mode and skip the header lines
+    inputfile = open(path.join(inputdir, "theme"), 'r')
+    inputfile = inputfile.readlines()[6:]
 
-# Instantiate and fill the pack metadata
-InputPack = EmotePack()
+    # Fill the container with Emotes
+    for line in inputfile:
+        if verbose:
+            print(line)
 
-InputPack.path = inputDir
-InputPack.output = outputDir
+        if line.startswith('!'):
+            line = line.replace('!', '')    # Strip off the leading !
+        line = line.strip().split()             # Split into tokens
 
-try:
-    InputPack.name = re.findall(r"Name=(.*)", inputData)[-1]
-except IndexError:
-    print("Couldn't find a name, skipping")
-    pass
+        thisemote = Emote()
+        # Identify the file and its type, as required for some formats.
+        thisemote.filename = line[0]
+        thisemote.filetype = mimetypes.guess_type(line[0])[0]
+        thisemote.shortcuts = line[1:]
 
-try:
-    InputPack.desc = re.findall(r"Description=(.*)", inputData)[-1]
-except IndexError:
-    print("Couldn't find a description, skipping")
-    pass
+        # Dimensions are required for phpBB
+        try:
+            im = Image.open(path.join(inputdir, thisemote.filename))
+            thisemote.width, thisemote.height = im.size
+        except IOError:
+            # If the file doesn't exist, lets not package it, either
+            continue
 
-try:
-    InputPack.author = re.findall(r"Author=(.*)", inputData)[-1]
-except IndexError:
-    print("Couldn't find an author, skipping")
-    pass
+        inputpack.emotelist.append(thisemote)
 
-if opts.name:
-    InputPack.filename = opts.name
-else:
-    InputPack.filename = InputPack.name
+    pm = PluginManager(
+        directories_list=["templates",
+                          path.join(path.dirname(path.abspath(__file__)),
+                                    "templates")
+                         ],
+        plugin_info_ext="plug"
+    )
+    pm.collectPlugins()
 
-# Reopen the pack in line mode and skip the header lines
-inputFile = open(path.join(inputDir, "theme"), 'r')
-inputFile = inputFile.readlines()[6:]
+    for backend in pm.getAllPlugins():
+        backend.plugin_object.build(inputpack)
 
-# Fill the container with Emotes
-for line in inputFile:
-    if verbose:
-        print(line)
+if __name__ == '__main__':
+    argp = ArgumentParser()
 
-    if line.startswith('!'):
-        line = line.replace('!', '')    # Strip off the leading !
-    line = line.strip().split()             # Split into tokens
+    argp.add_argument("-i", "--input",
+                      dest="inputdir",
+                      help="Input folder containing the emote pack")
+    argp.add_argument("-o", "--output",
+                      dest="outputdir",
+                      help="Output folder for converted packs")
+    argp.add_argument("-n", "--name",
+                      dest="name",
+                      help="Filename prefix")
+    argp.add_argument("-v", "--verbose",
+                      dest="verbose",
+                      action="store_true",
+                      help="Verbose output")
 
-    thisEmote = Emote()
-    thisEmote.filename = line[0]    # Identify the file and its type, as required for some formats.
-    thisEmote.filetype = mimetypes.guess_type(line[0])[0]
-    thisEmote.shortcuts = line[1:]
+    opts = argp.parse_args()
 
-    try:                # Dimensions are required for phpBB
-        im = Image.open(path.join(inputDir, thisEmote.filename))
-        thisEmote.width, thisEmote.height = im.size
-    except IOError:     # If the file doesn't exist, lets not package it, either
-        continue
+    inputdir = "input"
+    outputdir = "output"
+    verbose = False
 
-    InputPack.emotelist.append(thisEmote)
+    if opts.inputdir:
+        inputdir = opts.inputdir
 
-pm = PluginManager(
-    directories_list=["templates", path.join(path.dirname(path.abspath(__file__)), "templates")],
-    plugin_info_ext="plug"
-)
-pm.collectPlugins()
+    if opts.outputdir:
+        outputdir = opts.outputdir
 
-for backend in pm.getAllPlugins():
-    backend.plugin_object.build(InputPack)
+    if opts.verbose:
+        verbose = True
+
+    main()
